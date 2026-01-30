@@ -161,6 +161,40 @@ rm -rf ~/Library/Audio/Plug-Ins/Components/StereoImager.component
 
 **Result:** Still not visible in Logic Pro
 
+### Fix 6: Discovered and Cleared Apple's AudioComponentCache
+
+Found a DIFFERENT cache file that wasn't being cleared:
+```bash
+~/Library/Preferences/com.apple.audio.AudioComponentCache.plist
+```
+
+This is Apple's master Audio Component cache - separate from `~/Library/Caches/AudioUnitCache/`.
+
+Compared cache entries between working and non-working plugins:
+
+**TapeWarm (WORKING) in AudioComponentCache:**
+```
+ChannelConfigurations => [[1,1], [2,2]]  # Supports mono AND stereo
+SupportedChannelLayoutTags => {
+  Input => [6553601, 6619138, ...]
+  Output => [6553601, 6619138, ...]
+}
+```
+
+**StereoImager (NOT WORKING) in AudioComponentCache:**
+```
+ChannelConfigurations => [[2,2]]  # Stereo only
+SupportedChannelLayoutTags => {}  # EMPTY!
+```
+
+Deleted the cache:
+```bash
+rm ~/Library/Preferences/com.apple.audio.AudioComponentCache.plist
+killall -9 AudioComponentRegistrar
+```
+
+**Result:** Cache regenerated, but plugin still not visible in Logic Pro
+
 ---
 
 ## Current State
@@ -188,19 +222,29 @@ The plugin:
 
 ## Theories
 
-1. **Logic Pro Plugin Manager Blacklist**: Logic may have cached a "failed" status from an earlier scan when the plugin had issues. This cache may not be in the files we cleared.
+1. **Channel Configuration / Layout Tags**: The AudioComponentCache shows working plugins have `SupportedChannelLayoutTags` populated while StereoImager has it empty. This may be how JUCE reports channel capabilities and Logic might filter based on this.
 
-2. **Sandbox/Entitlements Issue**: Logic Pro may require specific entitlements that the plugin doesn't have.
+2. **Logic Pro Plugin Manager Blacklist**: Logic may have cached a "failed" status from an earlier scan when the plugin had issues. This cache may not be in the files we cleared.
 
-3. **Logic Pro-Specific Validation**: Logic may perform additional validation beyond auval that we're not aware of.
+3. **Sandbox/Entitlements Issue**: Logic Pro may require specific entitlements that the plugin doesn't have.
 
-4. **Plugin Manager Database**: There may be a Logic-specific database file storing plugin validation results that survives cache clearing.
+4. **Logic Pro-Specific Validation**: Logic may perform additional validation beyond auval that we're not aware of.
+
+5. **Plugin Manager Database**: There may be a Logic-specific database file storing plugin validation results that survives cache clearing.
+
+6. **JUCE Channel Configuration**: The way JUCE reports supported channel layouts may differ between plugins. Need to investigate how TapeWarm's PluginProcessor differs from StereoImager's in terms of `isBusesLayoutSupported()` implementation.
 
 ---
 
 ## Next Steps to Try
 
-1. **Check Logic Pro Plug-in Manager directly**:
+1. **Investigate Channel Layout Implementation** (HIGH PRIORITY):
+   - Compare `isBusesLayoutSupported()` in TapeWarm vs StereoImager PluginProcessor
+   - Check if TapeWarm supports mono while StereoImager doesn't
+   - Try adding mono support to StereoImager
+   - This is the most promising lead based on AudioComponentCache differences
+
+2. **Check Logic Pro Plug-in Manager directly**:
    - Open Logic Pro > Settings > Plug-in Manager
    - Look for StereoImager in the list
    - Check if it's marked as "failed" or "incompatible"
