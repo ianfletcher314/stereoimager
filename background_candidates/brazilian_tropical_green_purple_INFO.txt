@@ -1,0 +1,36 @@
+Background Image Information
+============================
+
+Filename: brazilian_tropical_green_purple.jpg
+
+Source: Unsplash (https://unsplash.com)
+Image URL: https://images.unsplash.com/photo-1518531933037-91b2f5f229cc
+Photographer: Search "tropical foliage" on Unsplash for attribution
+
+License: Unsplash License
+- Free for commercial and non-commercial use
+- No attribution required (but appreciated)
+- Cannot be sold without modification
+- Full license: https://unsplash.com/license
+
+Why it matches the StereoImager plugin color scheme:
+---------------------------------------------------
+The StereoImager plugin uses a multi-color scheme with Neve-style knobs:
+- Primary accent: Blue (#4a9eff)
+- Green accent: (#22c55e)
+- Purple accent: (#9b59b6)
+- Neve knob colors: Cream (#E8E0D0), Orange (#D97030), Blue (#4080C0)
+- Background: Dark (#1a1a1a)
+- Correlation colors: Green (good), Yellow (warn), Red (bad)
+
+This tropical foliage image features:
+- Rich green tones matching the plugin's green accent and correlation indicator
+- Purple undertones complementing the purple accent color
+- Organic textures that contrast with the technical stereo imaging function
+- Brazilian rainforest aesthetic (Amazon-inspired tropical leaves)
+
+Recommended usage:
+- Apply with low opacity (10-15%) for subtle organic texture
+- The green tones enhance the "healthy stereo field" visual metaphor
+- Works well behind the correlation meter and stereo field display
+- Creates an interesting contrast between nature and technical audio tools
